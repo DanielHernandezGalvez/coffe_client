@@ -1,0 +1,56 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { ProcessPageSchema } from "@/types";
+import { Picture, inferRemoteSize } from "astro:assets";
+
+const url = `${import.meta.env.API_URL}/pages?slug=proceso`;
+const response = await fetch(url);
+const json = await response.json();
+const data = ProcessPageSchema.parse(json[0]);
+
+const processKeys = Array.from({ length: 5 }, (_, i) => `process_${i + 1}`);
+console.log(data.acf);
+console.log(data.acf.process_1.titulo);
+---
+
+<Layout
+    title="nosotros"
+    subtitle={data.acf.subtitle}
+    bgImage={data.featured_images.full.url}
+>
+    <div
+        class="text-xl space-y-3 mt-10 lg:mt-0"
+        set:html={data.content.rendered}
+    />
+
+    <div class="mt-10 space-y-10">
+        {
+            processKeys.map( async (key, i) => {
+                const { titulo, descripcion, image } = data.acf[key];
+
+                const {width, height} = await inferRemoteSize(image);
+              
+
+                return (
+                    <section class="flex flex-col lg:flex-row lg:items-center gap-10">
+                       <div class={`w-full lg:w-1/2 ${i % 2 === 0 ? 'lg:order-1' : 'lg:order-2'}`}>
+                       <Picture 
+                            src={image} 
+                            alt={`aImagen de ${data.title}`} 
+                            class="w-full h-auto object-cover "
+                            height={height}
+                            width={width}
+                       />
+                        </div> 
+
+                        <div class={`w-full lg:w-1/2 ${i % 2 === 0 ? 'lg:order-2' : 'lg:order-1'}`}>
+                            
+                            <h3 class="text-cafe-900 font-black text-4xl pb-10 uppercase">{titulo}</h3>
+                            <p class="text-lg">{descripcion}</p>
+                        </div>
+                    </section>
+                );
+            })
+        }
+    </div>
+</Layout>
