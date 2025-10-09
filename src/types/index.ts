@@ -1,4 +1,5 @@
 import {z} from 'astro:content'
+import { slash } from 'node_modules/astro/dist/core/path'
 
 const imageSchema = z.object({
     url: z.string(),
@@ -16,6 +17,7 @@ const featureImagesSchema = z.object({
 
 export const BaseWPSchema =  z.object({
     id: z.number(),
+    slug: z.string(),
     title: z.object({
         rendered: z.string()
     }),
@@ -42,10 +44,14 @@ export const ProcessPageSchema = BaseWPSchema.extend({
 
 /* schema blog post */
 
-const CategorySchema = z.object({
+export const CategorySchema = z.object({
+    id: z.number(),
     name: z.string(),
     slug: z.string()
 })
+export const CategoriesSlugSchema = z.array(CategorySchema.pick({
+    slug: true
+}))
 const CategoriesSchema = z.array(CategorySchema)
 
 export const Postchema = BaseWPSchema.omit({
