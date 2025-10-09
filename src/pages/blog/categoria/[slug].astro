@@ -1,4 +1,7 @@
 ---
+import PostCard from "@/components/Blog/PostCard.astro";
+import Layout from "@/layouts/Layout.astro";
+import { PostsSchema } from "@/types";
 import { CategoriesSlugSchema } from "@/types";
 import { CategorySchema } from "@/types";
 
@@ -16,7 +19,21 @@ const catUrl = `${import.meta.env.API_URL}/categories?slug=${slug}`;
 const catRes = await fetch(catUrl);
 const catJson = await catRes.json();
 const category = CategorySchema.parse(catJson[0])
-console.log(category)
+
+const postsUrl = `${import.meta.env.API_URL}/posts?categories=${category.id}`;
+const postsRes = await fetch(postsUrl);
+const postsJson = await postsRes.json();
+const posts = PostsSchema.parse(postsJson)
+console.log(posts)
 ---
 
-<h1>desde categoría</h1>
+<Layout 
+    title={`Posts en la categoría: ${category.name}`} 
+    subtitle={`Artículos relacionados con ${category.name}`} 
+    bgImage={posts[0].featured_images?.full.url}
+>
+    
+{posts.map(post => <PostCard post={post} />)}
+
+
+</Layout>
