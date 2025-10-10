@@ -30,6 +30,15 @@ export const BaseWPSchema =  z.object({
     })
 })
 
+const gallerySchema = z.object({
+    large: imageSchema,
+    full: imageSchema
+})
+
+export const GalleryPageSchema = BaseWPSchema.extend({
+    gallery: z.array(gallerySchema)
+})
+
 const processSchema = z.object({
     titulo: z.string(),
     descripcion: z.string(),
@@ -64,3 +73,4 @@ export const Postchema = BaseWPSchema.omit({
 export const PostsSchema = z.array(Postchema)
 
 export type Post = z.infer<typeof Postchema>
+export type Gallery = z.infer<typeof gallerySchema>
