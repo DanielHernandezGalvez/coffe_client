@@ -40,3 +40,10 @@
     background-size: cover;
     background-position: center;
 }
+
+.input-label {
+  @apply text-cafe-900 uppercase font-bold text-lg
+}
+.input-field {
+  @apply border-cafe-900 border-2 p-2
+}

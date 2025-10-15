@@ -10,5 +10,5 @@ export default defineConfig({
     image: {
         domains: ['coffeeshop.local'],
     },
-    output: 'static',
+    // output: 'static',
 });
