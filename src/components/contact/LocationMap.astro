@@ -1,0 +1,53 @@
+---
+import type { Location } from "@/types";
+interface Props {
+    location: Location;
+}
+
+const { location } = Astro.props;
+---
+
+<div>
+    <h3 class="text-cafe-900 font-black uppercase text-center text-2xl mb-5">
+        Ubicación
+    </h3>
+
+    <div id="map" class="h-[500px]">
+        <iframe
+            src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d14926.808227307965!2d-103.37028165!3d20.72231995!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1ses!2smx!4v1760548754488!5m2!1ses!2smx"
+            width="600"
+            height="450"
+            style="border:0;"
+            allowfullscreen=""
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"></iframe>
+    </div>
+    <!-- cutom elemento -->
+    <location-data
+        data-lat={location.lat}
+        data-lng={location.lng}
+        data-zoom={location.zoom}
+        data-label={location.markers[0].label}></location-data>
+</div>
+<script>
+    import L from "leaflet";
+    import "leaflet/dist/leaflet.css";
+
+    class LocationData extends HTMLElement {
+        connectedCallback() {
+            const lat = this.dataset.lat;
+            const lng = this.dataset.lng;
+            const zoom = this.dataset.zoom;
+            const label = this.dataset.label;
+
+            if (lat && lng && zoom && label) {
+                const map = L.map("map").setView([+lat, +lng], +zoom);
+                L.tileLayer(
+                    "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+                ).addTo(map);
+                L.marker([+lat, +lng]).addTo(map).bindPopup(label).openPopup();
+            }
+        }
+    }
+    customElements.define("location-data", LocationData);
+</script>

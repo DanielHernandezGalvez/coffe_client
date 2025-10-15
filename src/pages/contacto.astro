@@ -1,0 +1,29 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { ContactPageSchema } from "@/types";
+import LocationMap from "../components/contact/LocationMap.astro";
+
+const url = `${import.meta.env.API_URL}/pages?slug=contacto`;
+const response = await fetch(url);
+const json = await response.json();
+const data = ContactPageSchema.parse(json[0]);
+console.log(data);
+---
+
+<Layout
+    title="Contacto"
+    subtitle={data.acf.subtitle}
+    bgImage={data.featured_images.full.url}
+>
+    <div
+        class="text-xl space-y-3 mt-10 lg:mt-0"
+        set:html={data.content.rendered}
+    />
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-5 mt-5">
+        <LocationMap
+            location={data.acf.location}
+        />
+    </div>
+    
+</Layout>
