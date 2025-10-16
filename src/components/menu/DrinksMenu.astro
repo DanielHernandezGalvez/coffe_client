@@ -37,4 +37,7 @@ console.log(json)
         pswpModule: () => import('photoswipe')
     });
     lightbox.init();
+     document.addEventListener('astro:page-load', function(){
+            lightbox.init();
+    })
 </script>
